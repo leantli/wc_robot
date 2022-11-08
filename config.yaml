@@ -1,0 +1,61 @@
+# 机器人的微信昵称
+robot_name: "机器人的微信昵称"
+# 机器人只回复以下昵称(用户/群)，多个昵称通过英文逗号','分隔(不支持备注，因为微信正常消息通信时并不返回群聊备注，因而统一用昵称)
+on_contact_nicknames: "a,b,c"
+
+# 以下 switch_on 都代表是否开启该功能, true 表示开启该功能
+
+# "天气","空气质量"关键词回复(数据来源为小米天气)
+# 具体城市/地区对应的 city_code 见 wc_robot/common/weather/cityID.xlsx
+# 默认设置为"深圳南山"的地区码
+weather_msg_handle:
+  switch_on: true
+  city_code: "101280604"
+
+# "情话","鸡汤","名言"关键词回复, 若懒得注册 token 可以不开启该功能
+# token 需自行到 https://admin.alapi.cn/user/register 注册获取
+# 该 api 免费用户支持 1qps 调用，对于个人使用来说绰绰有余
+alapi:
+  switch_on: false
+  token: "你自己注册得到的 token"
+
+# 每日定时发送天气消息，支持发送给指定昵称/备注用户(群聊)，多个可用','分隔
+# times 表示提醒时间，多个也可用','分隔
+weather_schedules:
+  - switch_on: false
+    to_nicknames: "a昵称,b昵称,c昵称"
+    to_remarknames: "d备注,e备注,f备注"
+    times: "8:35:00,18:00:00"
+    city_code: "101280604"
+
+
+# 每日定时发送消息，支持发送给指定昵称/备注用户(群聊)，多个可用','分隔
+clock_in_schedules:
+  - switch_on: false
+    to_nicknames: "a昵称,b昵称,c昵称"
+    to_remarknames: "d备注,e备注,f备注"
+    times: "00:00:00,9:00:00"
+    text: "好想我老婆诶"
+
+# 重要的日子功能，类似"倒数日"
+# data 是重要的日子的时间，仅支持 "2021-4-3" 这类格式
+# content 是重要的日子
+days_matters:
+  - switch_on: false
+    to_nicknames: "leantli"
+    to_remarknames: ""
+    times: "10:10:00"
+    date: "2021-4-3"
+    content: "和老婆在一起"
+  - switch_on: false
+    to_nicknames: "a群,b群,c用户"
+    to_remarknames: "d用户备注,e用户备注"
+    times: "10:10:10"
+    date: "2023-1-1"
+    content: "元旦"
+  - switch_on: false
+    to_nicknames: "a群"
+    to_remarknames: ""
+    times: "14:53:20"
+    date: "2022-12-5"
+    content: "发工资"
