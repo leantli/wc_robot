@@ -196,11 +196,18 @@ func onCovid(msg *robot.Message) error {
 }
 
 func onSurvivalTime(msg *robot.Message) error {
+	if !checkMatch(msg, "存活时间") {
+		return nil
+	}
+
 	now := time.Now()
 	nowString := now.Format(common.TimeFormat)
 	d := now.Sub(begin)
+	second := int(d.Seconds()) % 60
+	min := int(d.Minutes()) % 60
+	hour := int(d.Hours())
 	text := fmt.Sprintf("截止至 %s , 机器人已经存活了 %d 小时 %d 分 %d 秒",
-		nowString, int(d.Hours()), int(d.Minutes()), int(d.Seconds()))
+		nowString, hour, min, second)
 	_, err := msg.ReplyText(text)
 	return err
 }
