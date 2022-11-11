@@ -1,6 +1,9 @@
 package robot
 
-import "log"
+import (
+	"log"
+	"wc_robot/common"
+)
 
 // message_handler_chain.go 定义了消息处理链的结构与执行方法
 
@@ -18,6 +21,7 @@ type Handler struct {
 
 // 执行处理链中的handlers
 func (c *MsgHandlerChain) Handle(message *Message) {
+	checkOnContact(message)
 	for _, handler := range c.Handlers {
 		err := handler.HandleFn(message)
 		if err != nil {
@@ -35,4 +39,18 @@ func (c *MsgHandlerChain) RegisterHandler(name string, handleFns ...HandleFn) {
 		}
 		c.Handlers = append(c.Handlers, h)
 	}
+}
+
+// 基础校验，机器人只回复文字、监听的nickname、非自己
+func checkOnContact(msg *Message) bool {
+	if !msg.IsText() {
+		return false
+	}
+	if !msg.IsSentByNickName(common.GetConfig().OnContactNickNames) {
+		return false
+	}
+	if msg.IsFromSelf() {
+		return false
+	}
+	return true
 }
