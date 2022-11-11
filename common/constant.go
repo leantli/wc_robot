@@ -197,3 +197,5 @@ func GetMsgTypeDesc(MsgType int) string {
 	}
 	return fmt.Sprintf("未知的消息类型MsgType: %d", MsgType)
 }
+
+const TimeFormat string = "2006-01-02 15:04:05"

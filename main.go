@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 	"strings"
@@ -30,8 +31,9 @@ func init() {
 	// log.SetOutput(w)
 }
 
+var begin time.Time = time.Now()
+
 func main() {
-	begin := time.Now()
 	defer func() {
 		log.Printf("[INFO]本次机器人运行时间为: %s", time.Since(begin).String())
 	}()
@@ -39,6 +41,7 @@ func main() {
 
 	r := robot.NewRobot()
 	r.Chain.RegisterHandler("菜单|功能|会什么回复", onMenu)
+	r.Chain.RegisterHandler("存活时间回复", onSurvivalTime)
 	if config.WeatherMsgHandle.SwitchOn {
 		r.Chain.RegisterHandler("天气回复", onWeather)
 		r.Chain.RegisterHandler("空气质量回复", onAQI)
@@ -57,20 +60,6 @@ func main() {
 	}
 	robot.InitTasks(config)
 	r.Block()
-}
-
-// 基础校验，机器人只回复文字、监听的nickname、非自己
-func checkOnContact(msg *robot.Message) bool {
-	if !msg.IsText() {
-		return false
-	}
-	if !msg.IsSentByNickName(common.GetConfig().OnContactNickNames) {
-		return false
-	}
-	if msg.IsFromSelf() {
-		return false
-	}
-	return true
 }
 
 // 下面一些匹配：就strings.Contains()和正则匹配二者的性能来说，前者较优
@@ -94,9 +83,6 @@ func checkMatch(msg *robot.Message, keyword string) bool {
 // 监听菜单｜功能｜会什么相关的文字进行回复
 func onMenu(msg *robot.Message) error {
 	config := common.GetConfig()
-	if !checkOnContact(msg) {
-		return nil
-	}
 	if msg.IsFromGroup() {
 		if !(strings.Contains(msg.Content, "@"+config.RobotName) &&
 			(strings.Contains(msg.Content, "菜单") || strings.Contains(msg.Content, "功能") || strings.Contains(msg.Content, "会什么"))) {
@@ -115,9 +101,6 @@ func onMenu(msg *robot.Message) error {
 // 监听天气相关的文字进行回复
 func onWeather(msg *robot.Message) error {
 	config := common.GetConfig()
-	if !checkOnContact(msg) {
-		return nil
-	}
 	if !checkMatch(msg, "天气") {
 		return nil
 	}
@@ -133,9 +116,6 @@ func onWeather(msg *robot.Message) error {
 // 监听空气质量(指标含义) 的文字进行回复
 func onAQI(msg *robot.Message) error {
 	config := common.GetConfig()
-	if !checkOnContact(msg) {
-		return nil
-	}
 	if !checkMatch(msg, "空气质量") {
 		return nil
 	}
@@ -154,9 +134,6 @@ func onAQI(msg *robot.Message) error {
 
 // 监听心灵鸡汤相关的文字进行回复
 func onSoul(msg *robot.Message) error {
-	if !checkOnContact(msg) {
-		return nil
-	}
 	if !checkMatch(msg, "鸡汤") {
 		return nil
 	}
@@ -171,9 +148,6 @@ func onSoul(msg *robot.Message) error {
 
 // 监听情话相关的文字进行回复
 func onQingHua(msg *robot.Message) error {
-	if !checkOnContact(msg) {
-		return nil
-	}
 	if !checkMatch(msg, "情话") {
 		return nil
 	}
@@ -188,9 +162,6 @@ func onQingHua(msg *robot.Message) error {
 
 // 监听名言相关的文字进行回复
 func onMingYan(msg *robot.Message) error {
-	if !checkOnContact(msg) {
-		return nil
-	}
 	if !checkMatch(msg, "名言") {
 		return nil
 	}
@@ -207,9 +178,6 @@ var locationRE = regexp.MustCompile("([\u4e00-\u9fa5]{1,6})疫情")
 
 // 监听疫情相关的文字进行回复
 func onCovid(msg *robot.Message) error {
-	if !checkOnContact(msg) {
-		return nil
-	}
 	if !checkMatch(msg, "疫情") {
 		return nil
 	}
@@ -224,5 +192,15 @@ func onCovid(msg *robot.Message) error {
 		return err
 	}
 	_, err = msg.ReplyText(covid.PrintCovidSituation(cr))
+	return err
+}
+
+func onSurvivalTime(msg *robot.Message) error {
+	now := time.Now()
+	nowString := now.Format(common.TimeFormat)
+	d := now.Sub(begin)
+	text := fmt.Sprintf("截止至 %s , 机器人已经存活了 %d 小时 %d 分 %d 秒",
+		nowString, int(d.Hours()), int(d.Minutes()), int(d.Seconds()))
+	_, err := msg.ReplyText(text)
 	return err
 }
