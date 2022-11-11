@@ -31,7 +31,7 @@ func GetMingYan() (string, error) {
 	if err := utils.ScanJson(resp, &ar); err != nil {
 		return "", err
 	}
-	return fmt.Sprintf("%s --%s\n", ar.Data.Content, ar.Data.Author), nil
+	return fmt.Sprintf("%s --%s", ar.Data.Content, ar.Data.Author), nil
 }
 
 // 请求情话

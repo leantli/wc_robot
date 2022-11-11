@@ -77,10 +77,9 @@ func (m *Message) GetSender() *User {
 }
 
 // ReplyText 以文本消息的方式回复，返回发送消息的MsgID, err
-func (m *Message) ReplyText(content string) (string, error) {
+func (m *Message) ReplyText(content string) (*SendMessageResp, error) {
 	sm := NewSendMessage(common.MT_TEXT, content, Storage.Self.UserName, m.FromUserName, "")
-	smr, err := Caller.SendMsg(Storage.RequiredParams, sm)
-	return smr.MsgID, err
+	return Caller.SendMsg(Storage.RequiredParams, sm)
 }
 
 // 判断消息是否为text类型
