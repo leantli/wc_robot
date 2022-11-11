@@ -15,6 +15,7 @@ type Config struct {
 
 	WeatherMsgHandle *WeatherMsgHandle  `yaml:"weather_msg_handle"` // 天气、空气质量消息自动回复
 	ALAPI            *ALAPI             `yaml:"alapi"`              // 情话、鸡汤、名言消息自动回复
+	CovidMsgHandle   *CovidMsgHandle    `yaml:"covid_msg_handle"`   // 疫情消息自动回复
 	WeatherSchedule  []*WeatherSchedule `yaml:"weather_schedules"`  // 每天定时发送天气提醒
 	ClockInSchedule  []*ClockInSchedule `yaml:"clock_in_schedules"` // 每天定时发送信息
 	DaysMatters      []*DaysMatter      `yaml:"days_matters"`       // 重要的日子， 设置则会每天定时提醒距离该日子的时间
@@ -30,6 +31,11 @@ type WeatherMsgHandle struct {
 type ALAPI struct {
 	SwitchOn bool   `yaml:"switch_on"` // "情话、鸡汤、名言回复"开关，true为开，false为关闭
 	Token    string `yaml:"token"`     // alapi 调用的 token
+}
+
+// 疫情消息自动回复相关参数
+type CovidMsgHandle struct {
+	SwitchOn bool `yaml:"switch_on"` // "疫情回复"开关
 }
 
 // 重要的日子， 设置则会每天定时提醒距离该日子的时间

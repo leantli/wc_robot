@@ -76,7 +76,7 @@ func getWeatherToMembers(cityCode, toNickNames, ToRemarkNames string) {
 		log.Printf("[ERROR]获取天气信息失败 err:%v", err)
 	}
 	for _, user := range users {
-		_, err = Storage.Self.SendTextToUser(user, weather.CurrentWeatherInfo(w))
+		_, err = Storage.Self.SendTextToUser(user, w.GetCurrentWeatherInfo())
 		if err != nil {
 			log.Printf("[ERROR]发送消息给 %s 失败, err:%v", user.NickName, err)
 		}

@@ -83,11 +83,18 @@ type AQI struct {
 }
 
 // 获取天气信息中的当前天气信息
-func CurrentWeatherInfo(w *Weather) string {
+func (w *Weather) GetCurrentWeatherInfo() string {
 	next1 := strconv.Itoa(w.ForecastHourly.Weather.Value[0])
 	next2 := strconv.Itoa(w.ForecastHourly.Weather.Value[1])
 	next3 := strconv.Itoa(w.ForecastHourly.Weather.Value[2])
-	return fmt.Sprintf("你好呀👋\n当前天气: %s\n当前温度: %s%s\n当前湿度: %s%s\n当前空气质量: %s\n预期未来三小时天气: %s, %s, %s\n今日最低/高温度: %s/%s\n今日天气预期: %s->%s\n本次数据更新时间: %s",
+	return fmt.Sprintf("你好呀👋\n当前天气: %s\n"+
+		"当前温度: %s%s\n"+
+		"当前湿度: %s%s\n"+
+		"当前空气质量: %s\n"+
+		"预期未来三小时天气: %s, %s, %s\n"+
+		"今日最低/高温度: %s/%s\n"+
+		"今日天气预期: %s->%s\n"+
+		"本次数据更新时间: %s",
 		GetWeatherCodeDesc(w.Current.Weather),
 		w.Current.Temperature.Value, w.Current.Temperature.Unit,
 		w.Current.Humidity.Value, w.Current.Humidity.Unit,
@@ -100,10 +107,22 @@ func CurrentWeatherInfo(w *Weather) string {
 }
 
 // 获取天气信息中的AQI空气质量信息
-func AQIInfo(w *Weather) string {
-	return fmt.Sprintf("你好呀👋\n当前空气质量: %s %s\nPM2.5细颗粒物: %sμg/m³\nPM10可吸入颗粒物: %sμg/m³\nSO2二氧化硫: %sμg/m³\nNO2二氧化氮: %sμg/m³\nO3臭氧: %sμg/m³\n CO一氧化碳: %smg/m³\n本次数据更新时间: %s",
-		w.AQI.Aqi, GetAQIQuality(w.AQI.Aqi), w.AQI.PM25, w.AQI.PM10,
-		w.AQI.SO2, w.AQI.NO2, w.AQI.O3, w.AQI.CO,
+func (w *Weather) GetAQIInfo() string {
+	return fmt.Sprintf("你好呀👋\n当前空气质量: %s %s\n"+
+		"PM2.5细颗粒物: %sμg/m³\n"+
+		"PM10可吸入颗粒物: %sμg/m³\n"+
+		"SO2二氧化硫: %sμg/m³\n"+
+		"NO2二氧化氮: %sμg/m³\n"+
+		"O3臭氧: %sμg/m³\n"+
+		"CO一氧化碳: %smg/m³\n"+
+		"本次数据更新时间: %s",
+		w.AQI.Aqi, GetAQIQuality(w.AQI.Aqi),
+		w.AQI.PM25,
+		w.AQI.PM10,
+		w.AQI.SO2,
+		w.AQI.NO2,
+		w.AQI.O3,
+		w.AQI.CO,
 		strings.TrimSuffix(w.Current.PubTime, "+08:00"), //去除pubTime后面的时区显示+08:00
 	)
 }
