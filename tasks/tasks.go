@@ -1,4 +1,4 @@
-package robot
+package tasks
 
 import (
 	"fmt"
@@ -8,6 +8,7 @@ import (
 
 	"wc_robot/common"
 	"wc_robot/common/weather"
+	"wc_robot/robot"
 
 	"github.com/jasonlvhit/gocron"
 )
@@ -76,7 +77,7 @@ func getWeatherToMembers(cityCode, toNickNames, ToRemarkNames string) {
 		log.Printf("[ERROR]获取天气信息失败 err:%v", err)
 	}
 	for _, user := range users {
-		_, err = Storage.Self.SendTextToUser(user, w.GetCurrentWeatherInfo())
+		_, err = robot.Storage.Self.SendTextToUser(user, w.GetCurrentWeatherInfo())
 		if err != nil {
 			log.Printf("[ERROR]发送消息给 %s 失败, err:%v", user.NickName, err)
 		}
@@ -92,7 +93,7 @@ func sendText(content, toNickNames, ToRemarkNames string) {
 
 	for _, user := range users {
 		log.Printf("[INFO]要发送消息给%s\n", user.NickName)
-		_, err := Storage.Self.SendTextToUser(user, content)
+		_, err := robot.Storage.Self.SendTextToUser(user, content)
 		if err != nil {
 			log.Printf("[ERROR]发送消息给 %s 失败, err:%v", user.NickName, err)
 		}
@@ -122,7 +123,7 @@ func daysMatter(content string, day time.Time, toNickNames, ToRemarkNames string
 	}
 
 	for _, user := range users {
-		_, err := Storage.Self.SendTextToUser(user, s)
+		_, err := robot.Storage.Self.SendTextToUser(user, s)
 		if err != nil {
 			log.Printf("[ERROR]发送消息给 %s 失败, err:%v", user.NickName, err)
 		}
@@ -130,7 +131,7 @@ func daysMatter(content string, day time.Time, toNickNames, ToRemarkNames string
 }
 
 // 根据nicknames和remarknames返回得到user
-func getToUsers(toNickNames, ToRemarkNames string) []*User {
+func getToUsers(toNickNames, ToRemarkNames string) []*robot.User {
 	var nicknames []string
 	var remarknames []string
 	if len(toNickNames) != 0 {
@@ -140,9 +141,9 @@ func getToUsers(toNickNames, ToRemarkNames string) []*User {
 		remarknames = strings.Split(ToRemarkNames, separator)
 	}
 
-	var users []*User
+	var users []*robot.User
 	for _, name := range nicknames {
-		ms := Storage.SearchMembersByNickName(1, name)
+		ms := robot.Storage.SearchMembersByNickName(1, name)
 		if len(ms) == 0 {
 			log.Printf("[ERROR]未找到该用户/群: %s, 请确认用户/群聊昵称是否输入正确, 不支持备注\n", name)
 			continue
@@ -155,7 +156,7 @@ func getToUsers(toNickNames, ToRemarkNames string) []*User {
 	}
 
 	for _, name := range remarknames {
-		ms := Storage.SearchMembersByRemarkName(1, name)
+		ms := robot.Storage.SearchMembersByRemarkName(1, name)
 		if len(ms) == 0 {
 			log.Printf("[ERROR]未找到该用户: %s, 请确认用户备注是否输入正确, 不支持群聊备注, 因为微信未返回群聊备注名\n", name)
 			continue

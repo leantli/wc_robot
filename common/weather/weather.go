@@ -8,7 +8,7 @@ import (
 )
 
 // 天气
-type Weather struct {
+type WeatherResp struct {
 	Current        *Current        `json:"current"`        // 当前天气预报
 	ForecastDaily  *ForecastDaily  `json:"forecastDaily"`  // 未来15日天气预报(含今日)
 	ForecastHourly *ForecastHourly `json:"forecastHourly"` // 未来24h天气预报(不含当前小时)
@@ -33,7 +33,7 @@ func (c *Current) String() string {
 		c.Temperature.Value, c.Temperature.Unit,
 		c.Humidity.Value, c.Humidity.Unit,
 		c.Pressure.Value, c.Pressure.Unit,
-		c.PubTime,
+		strings.Join(strings.Split(strings.TrimSuffix(c.PubTime, "+08:00"), "T"), " "),
 	)
 }
 
@@ -83,11 +83,11 @@ type AQI struct {
 }
 
 // 获取天气信息中的当前天气信息
-func (w *Weather) GetCurrentWeatherInfo() string {
+func (w *WeatherResp) GetCurrentWeatherInfo() string {
 	next1 := strconv.Itoa(w.ForecastHourly.Weather.Value[0])
 	next2 := strconv.Itoa(w.ForecastHourly.Weather.Value[1])
 	next3 := strconv.Itoa(w.ForecastHourly.Weather.Value[2])
-	return fmt.Sprintf("你好呀👋\n当前天气: %s\n"+
+	return fmt.Sprintf("当前天气: %s\n"+
 		"当前温度: %s%s\n"+
 		"当前湿度: %s%s\n"+
 		"当前空气质量: %s\n"+
@@ -102,13 +102,13 @@ func (w *Weather) GetCurrentWeatherInfo() string {
 		GetWeatherCodeDesc(next1), GetWeatherCodeDesc(next2), GetWeatherCodeDesc(next3),
 		w.ForecastDaily.Temperature.Value[0].To, w.ForecastDaily.Temperature.Value[0].From,
 		GetWeatherCodeDesc(w.ForecastDaily.Weather.Value[0].From), GetWeatherCodeDesc(w.ForecastDaily.Weather.Value[0].To),
-		strings.TrimSuffix(w.Current.PubTime, "+08:00"), //去除pubTime后面的时区显示+08:00
+		strings.Join(strings.Split(strings.TrimSuffix(w.Current.PubTime, "+08:00"), "T"), " "),
 	)
 }
 
 // 获取天气信息中的AQI空气质量信息
-func (w *Weather) GetAQIInfo() string {
-	return fmt.Sprintf("你好呀👋\n当前空气质量: %s %s\n"+
+func (w *WeatherResp) GetAQIInfo() string {
+	return fmt.Sprintf("当前空气质量: %s %s\n"+
 		"PM2.5细颗粒物: %sμg/m³\n"+
 		"PM10可吸入颗粒物: %sμg/m³\n"+
 		"SO2二氧化硫: %sμg/m³\n"+
@@ -123,11 +123,31 @@ func (w *Weather) GetAQIInfo() string {
 		w.AQI.NO2,
 		w.AQI.O3,
 		w.AQI.CO,
-		strings.TrimSuffix(w.Current.PubTime, "+08:00"), //去除pubTime后面的时区显示+08:00
+		strings.Join(strings.Split(strings.TrimSuffix(w.Current.PubTime, "+08:00"), "T"), " "),
 	)
 }
 
 // 获取AQI空气质量指标的描述
 func AQIIndicesDesc() string {
 	return strings.Join([]string{pm25Desc, pm10Desc, so2Desc, no2Desc, o3Desc, coDesc}, "\n")
+}
+
+// 模糊查询城市接口响应结果
+type CityLikeResp struct {
+	Data    map[string]string `json:"data"` // "城市id" : "省份, 城市, 区/县" 为 kv 的数据结果
+	Message string            // 响应消息
+	Status  int               // 响应状态码
+}
+
+// 获取各个城市及其对应的城市 id 映射表
+func (r *CityLikeResp) GetCityLike() map[string]string {
+	if len(r.Data) == 0 {
+		return r.Data
+	}
+	reversedMap := make(map[string]string, len(r.Data))
+	for k, v := range r.Data {
+		v = strings.Join(strings.Split(v, ", "), "")
+		reversedMap[v] = k
+	}
+	return reversedMap
 }
