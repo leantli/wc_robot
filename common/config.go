@@ -24,7 +24,7 @@ type Config struct {
 // 天气、空气质量消息自动回复相关参数
 type WeatherMsgHandle struct {
 	SwitchOn bool   `yaml:"switch_on"` // "天气、空气质量回复"开关，true为开，false为关闭
-	CityCode string `yaml:"city_code"` // 回复天气时回复的地区
+	CityCode string `yaml:"city_code"` // [Deprecated] 回复天气时回复的地区
 }
 
 // 情话、鸡汤、名言自动回复相关参数

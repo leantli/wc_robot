@@ -2,14 +2,16 @@ package robot
 
 import (
 	"log"
-	"wc_robot/common"
 )
 
 // message_handler_chain.go 定义了消息处理链的结构与执行方法
 
 type MsgHandlerChain struct {
-	Handlers []*Handler // 消息处理链
+	GlobalMatch IsMatchFn
+	Handlers    []*Handler // 消息处理链
 }
+
+type IsMatchFn func(message *Message) bool
 
 type HandleFn func(message *Message) error
 
@@ -21,7 +23,7 @@ type Handler struct {
 
 // 执行处理链中的handlers
 func (c *MsgHandlerChain) Handle(message *Message) {
-	if !checkOnContact(message) {
+	if !c.GlobalMatch(message) {
 		return
 	}
 	for _, handler := range c.Handlers {
@@ -43,16 +45,7 @@ func (c *MsgHandlerChain) RegisterHandler(name string, handleFns ...HandleFn) {
 	}
 }
 
-// 基础校验，机器人只回复文字、监听的nickname、非自己，其余都不回复，返回 false
-func checkOnContact(msg *Message) bool {
-	if !msg.IsText() {
-		return false
-	}
-	if !msg.IsSentByNickName(common.GetConfig().OnContactNickNames) {
-		return false
-	}
-	if msg.IsFromSelf() {
-		return false
-	}
-	return true
+// 注册全局校验方法
+func (c *MsgHandlerChain) RegisterGlobalCheck(matchFn IsMatchFn) {
+	c.GlobalMatch = matchFn
 }
