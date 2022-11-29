@@ -47,7 +47,7 @@
 2. `weather_schedules.to_nicknames` 该天气预报要发送给谁，填写内容为微信用户的昵称，支持群聊昵称，若需填写多人则通过英文逗号','分隔
 3. `weather_schedules.to_remarknames` 该天气预报要发送给谁，填写内容为微信用户的备注，不支持群聊备注，微信正常通信时未返回群聊备注，无法识别，若需填写多人则通过英文逗号','分隔
 4. `weather_schedules.times` 每日定时发送天气预报的具体时间，格式为"00:00:00"，多个时间则通过英文逗号','分隔
-5. `weather_schedules.city_code` 该天气预报播报的地区，默认为"101280604"，对应深圳南山地区，若需变动，见[详细地区码对应表](https://github.com/leantli/wc_robot/blob/main/common/weather/cityID.xlsx)
+5. `weather_schedules.city_code` 该天气预报播报的地区，默认为深圳南山地区，若需变更，见 https://wis.qq.com/city/like?source=pc&city=南山 , 自行修改最后的"南山"，检索得到对应的 city_code
 
 #### 每日定时发送消息
 
