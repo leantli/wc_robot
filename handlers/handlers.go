@@ -13,6 +13,8 @@ import (
 	"wc_robot/robot"
 )
 
+// handlers 包，包含了对消息的各类处理方法
+
 var (
 	begin           = time.Now()                                       // 存活时间计时
 	locateWeatherRE = regexp.MustCompile("([\u4e00-\u9fa5]{1,6})天气")   // {城市}天气正则, 匹配位置
