@@ -16,6 +16,7 @@ type Config struct {
 	WeatherMsgHandle *WeatherMsgHandle  `yaml:"weather_msg_handle"` // 天气、空气质量消息自动回复
 	ALAPI            *ALAPI             `yaml:"alapi"`              // 情话、鸡汤、名言消息自动回复
 	CovidMsgHandle   *CovidMsgHandle    `yaml:"covid_msg_handle"`   // 疫情消息自动回复
+	OpenAIHandle     *OpenAI            `yaml:"openai"`             // OpenAI API 相关配置
 	WeatherSchedule  []*WeatherSchedule `yaml:"weather_schedules"`  // 每天定时发送天气提醒
 	ClockInSchedule  []*ClockInSchedule `yaml:"clock_in_schedules"` // 每天定时发送信息
 	DaysMatters      []*DaysMatter      `yaml:"days_matters"`       // 重要的日子， 设置则会每天定时提醒距离该日子的时间
@@ -36,6 +37,13 @@ type ALAPI struct {
 // 疫情消息自动回复相关参数
 type CovidMsgHandle struct {
 	SwitchOn bool `yaml:"switch_on"` // "疫情回复"开关
+}
+
+// OpenAI API 相关配置
+type OpenAI struct {
+	ApiKey           string `yaml:"api_key"`                   // OpenAI 的 API_KEY
+	GPTTextSwitchOn  bool   `yaml:"gpt_text_switch_on"`        // GPT 文字回复开关, true 为开, false 为关闭
+	GPTTextIsDefault bool   `yaml:"gpt_text_is_default_reply"` // GPT 文字回复是否作为默认回复(当不触发其他关键词时)，不是默认回复时需要通过 "gpt xxx" 才能触发
 }
 
 // 重要的日子， 设置则会每天定时提醒距离该日子的时间

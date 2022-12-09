@@ -20,6 +20,16 @@ alapi:
   switch_on: false
   token: "你自己注册得到的 token"
 
+# openai api 功能配置
+# api_key 需到 openai 官网注册后，到 https://beta.openai.com/account/api-keys 获取
+# gpt_text_switch_on 是否开启 gpt 自动回复功能
+# gpt_text_is_default_reply 是否设置 gpt 文字回复为默认回复(即其他关键词未触发时自动调用 GPT)，true 为是
+# false 时需要通过 "gpt xxx" 格式触发 gpt 回复
+openai:
+  api_key: "在 OpenAI 官网注册后，在右上角自己找找"
+  gpt_text_switch_on: false
+  gpt_text_is_default_reply: true
+
 # 每日定时发送天气消息，支持发送给指定昵称/备注用户(群聊)，多个可用','分隔
 # times 表示提醒时间，多个也可用','分隔
 # 具体城市/地区对应的 city_code 见 https://wis.qq.com/city/like?source=pc&city=南山
