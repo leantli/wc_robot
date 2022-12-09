@@ -17,6 +17,8 @@ type HandleFn func(message *Message) error
 
 type Handler struct {
 	Name string
+	// 是否匹配成功的方法
+	IsMatchFn IsMatchFn
 	// 处理消息的具体方法
 	HandleFn HandleFn
 }
@@ -27,19 +29,24 @@ func (c *MsgHandlerChain) Handle(message *Message) {
 		return
 	}
 	for _, handler := range c.Handlers {
-		err := handler.HandleFn(message)
-		if err != nil {
-			log.Printf("[ERROR]处理器%s处理失败, 错误原因err:%v", handler.Name, err)
+		// 匹配上了再处理，处理成了就直接返回，不继续匹配了
+		if handler.IsMatchFn(message) {
+			err := handler.HandleFn(message)
+			if err != nil {
+				log.Printf("[ERROR]处理器%s处理失败, 错误原因err:%v", handler.Name, err)
+			}
+			return
 		}
 	}
 }
 
 // 注册消息处理方法
-func (c *MsgHandlerChain) RegisterHandler(name string, handleFns ...HandleFn) {
+func (c *MsgHandlerChain) RegisterHandler(name string, matchFn IsMatchFn, handleFns ...HandleFn) {
 	for _, fn := range handleFns {
 		h := &Handler{
-			Name:     name,
-			HandleFn: fn,
+			Name:      name,
+			HandleFn:  fn,
+			IsMatchFn: matchFn,
 		}
 		c.Handlers = append(c.Handlers, h)
 	}

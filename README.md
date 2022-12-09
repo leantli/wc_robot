@@ -14,6 +14,7 @@
 
  **可选功能：** 
 - 配置 alapi token 后支持自动回复"情话/鸡汤/名言"
+- 支持 GPT 文字模型自动回复
 
  **使用前置条件** 
 
@@ -79,6 +80,13 @@
 1. `alapi.switch_on` 是否开启该关键字自动回复，默认为 `false`，开启则配置为 `true`，并注意配置好 `token`
 2. `alapi.token`，需自行到 [ALAPI 网站](https://admin.alapi.cn/user/register) 注册获取, 该 api 免费用户支持 1qps 调用，对于个人使用来说绰绰有余。
 
+#### (可选功能) GPT 文字模型回复
+
+1. `openai.api_key`: open_ai 的鉴权 token，需到 openai 官网注册后，到 https://beta.openai.com/account/api-keys 获取
+2. `openai.gpt_text_switch_on` 是否开启 GPT 文字回复功能，默认为 `false`
+3. `openai.gpt_text_is_default_reply` 是否设置 gpt 文字回复为默认回复(即其他关键词未触发时自动调用 GPT)，false 关闭时需要通过 "gpt xxx" 格式触发 gpt 回复；默认开启
+
+
 ### 部署到 Linux CentOS 服务器上
 
 1. 在项目根目录下执行命令 `env GOOS=linux GOARCH=amd64 go build -o wc_robot main.go`
@@ -106,6 +114,10 @@
 
 2022.11.28 TODO(leantli):
 1. 每次出去吃东西都有几个选项，但都犹豫不决，女朋友让我给机器人整个随机选择
+
+2022.12.9 TODO(leanli):
+1. 增加 GPT 聊天回复(☑️)
+2. 增加热配置功能
 
 由于上班较忙+还要玩游戏，所以开发进度可能比较慢
 
